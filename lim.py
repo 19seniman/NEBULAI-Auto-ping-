@@ -2,6 +2,53 @@ import hashlib, time, random, aiohttp, asyncio, numpy as np, os
 from typing import List, Optional, Tuple
 import concurrent.futures
 
+# Logger
+class Logger:
+    colors = {
+        "green": "\033[92m",
+        "yellow": "\033[93m",
+        "red": "\033[91m",
+        "cyan": "\033[96m",
+        "white": "\033[97m",
+        "reset": "\033[0m",
+        "bold": "\033[1m"
+    }
+
+    @staticmethod
+    def info(msg):
+        print(f"{Logger.colors['green']}[✓] {msg}{Logger.colors['reset']}")
+
+    @staticmethod
+    def wallet(msg):
+        print(f"{Logger.colors['yellow']}[➤] {msg}{Logger.colors['reset']}")
+
+    @staticmethod
+    def warn(msg):
+        print(f"{Logger.colors['yellow']}[⚠] {msg}{Logger.colors['reset']}")
+
+    @staticmethod
+    def error(msg):
+        print(f"{Logger.colors['red']}[✗] {msg}{Logger.colors['reset']}")
+
+    @staticmethod
+    def success(msg):
+        print(f"{Logger.colors['green']}[✅] {msg}{Logger.colors['reset']}")
+
+    @staticmethod
+    def loading(msg):
+        print(f"{Logger.colors['cyan']}[⟳] {msg}{Logger.colors['reset']}")
+
+    @staticmethod
+    def step(msg):
+        print(f"{Logger.colors['white']}[➤] {msg}{Logger.colors['reset']}")
+
+    @staticmethod
+    def banner():
+        print(f"{Logger.colors['cyan']}{Logger.colors['bold']}")
+        print("---------------------------------------------")
+        print(" ddai-depin-on-solana  -  19Seniman From Insider ")
+        print("---------------------------------------------" + Logger.colors['reset'] + "\n")
+
 def generate_matrix(seed: int, size: int) -> np.ndarray:
     matrix = np.empty((size, size), dtype=np.float64)
     current_seed = seed
@@ -82,18 +129,19 @@ async def worker_loop(token: str):
             await asyncio.sleep(0.5 if submitted else 3)
 
 async def main():
+    Logger.banner()  # Menampilkan banner saat program dimulai
     if not os.path.exists("data.txt"):
-        print("data.txt not found!")
+        Logger.error("data.txt not found!")
         return
     with open("data.txt") as f:
-        data = [line.strip() for line in f if line.strip()]  # Ganti tokens menjadi data
+        data = [line.strip() for line in f if line.strip()]
     if not data:
-        print("No data in data.txt!")  # Ganti pesan kesalahan
+        Logger.warn("No data in data.txt!")
         return
-    await asyncio.gather(*(worker_loop(token) for token in data))  # Ganti tokens menjadi data
+    await asyncio.gather(*(worker_loop(token) for token in data))
 
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("\n[😒] Stopped by user")
+        Logger.warn("Stopped by user")
