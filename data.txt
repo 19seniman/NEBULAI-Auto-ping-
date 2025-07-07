@@ -1,1 +1,1 @@
-please read!! inspect Nebulai then select network then select user_info copy the token and paste it here.
+please read!! inspect Nebulai web then select network then select user_info copy the token and paste it here.
