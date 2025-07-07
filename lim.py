@@ -50,9 +50,9 @@ class Logger:
     @staticmethod
     def banner():
         print(f"{Logger.colors['cyan']}{Logger.colors['bold']}")
-        print("---------------------------------------------")
-        print(" ddai-depin-on-solana  -  19Seniman From Insider ")
-        print("---------------------------------------------" + Logger.colors['reset'] + "\n")
+        print("------------------------------------------------")
+        print(" 🍉 19Seniman From Insider - FREE PALESTINE 🍉")
+        print("-------------------------------------------------" + Logger.colors['reset'] + "\n")
 
 def generate_matrix(seed: int, size: int) -> np.ndarray:
     matrix = np.empty((size, size), dtype=np.float64)
