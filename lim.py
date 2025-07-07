@@ -5,6 +5,7 @@ import asyncio
 import numpy as np
 import os
 import concurrent.futures
+from typing import Optional, Tuple  # Pastikan Tuple diimpor dari typing
 
 # Logger
 class Logger:
