@@ -4,6 +4,11 @@
 
 ~ register your account: https://nebulai.network/opencompute?invite_by=L2BD6W
 
+##  🍉 Donate for  watermelon
+
+**EVM Address** (usdt or another token). 
+```0xf01fb9a6855f175d3f3e28e00fa617009c38ef59```
+
 ## INSTALLATION
 
 ```
