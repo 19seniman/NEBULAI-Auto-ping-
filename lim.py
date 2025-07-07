@@ -46,7 +46,7 @@ class Logger:
     def banner():
         print(f"{Logger.colors['cyan']}{Logger.colors['bold']}")
         print("---------------------------------------------")
-        print(" ddai-depin-on-solana  -  19Seniman From Insider ")
+        print(" 19Seniman From Insider ")
         print("---------------------------------------------" + Logger.colors['reset'] + "\n")
 
 def generate_matrix(seed: int, size: int) -> np.ndarray:
