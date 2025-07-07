@@ -81,6 +81,7 @@ async def fetch_task(session: aiohttp.ClientSession, token: str) -> Tuple[dict, 
     try:
         async with session.post("https://nebulai.network/open_compute/finish/task", json={}, headers=headers, timeout=10) as resp:
             data = await resp.json()
+            Logger.info(f"Response from API: {data}")  # Menambahkan log untuk respons API
             if data.get("code") == 0:
                 return data['data'], True
             Logger.warn(f"API returned error code: {data.get('code')}")
