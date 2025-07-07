@@ -83,6 +83,7 @@ async def fetch_task(session: aiohttp.ClientSession, token: str) -> Tuple[dict, 
             data = await resp.json()
             if data.get("code") == 0:
                 return data['data'], True
+            Logger.warn(f"API returned error code: {data.get('code')}")
             return None, False
     except Exception as e:
         Logger.error(f"Fetch error: {str(e)}")
@@ -108,12 +109,14 @@ async def process_task(token: str, task_data: dict) -> Optional[Tuple[float, flo
     try:
         with concurrent.futures.ThreadPoolExecutor() as executor:
             t0 = time.time() * 1000
+            Logger.info("Generating matrices...")
             A_future = executor.submit(generate_matrix, seed1, size)
             B_future = executor.submit(generate_matrix, seed2, size)
             A, B = await asyncio.gather(
                 asyncio.wrap_future(A_future),
                 asyncio.wrap_future(B_future)
             )
+            Logger.info("Matrices generated successfully.")
         C = multiply_matrices(A, B)
         f = await compute_hash_mod(C)
         t1 = time.time() * 1000
@@ -127,13 +130,16 @@ async def process_task(token: str, task_data: dict) -> Optional[Tuple[float, flo
 async def worker_loop(token: str):
     async with aiohttp.ClientSession() as session:
         while True:
+            Logger.info("Fetching task...")
             task_data, success = await fetch_task(session, token)
             if not success:
+                Logger.warn("Failed to fetch task, retrying...")
                 await asyncio.sleep(2)
                 continue
             Logger.info("Task fetched successfully.")
             results = await process_task(token, task_data)
             if not results:
+                Logger.warn("Failed to process task, retrying...")
                 await asyncio.sleep(1)
                 continue
             submitted = await submit_results(session, token, results[0], results[1], task_data["task_id"])
