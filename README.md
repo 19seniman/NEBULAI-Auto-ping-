@@ -7,14 +7,14 @@
 ## INSTALLATION
 
 ```
-git clone 
+git clone https://github.com/19seniman/NEBULAI-Auto-ping-.git
 ```
 ```
-cd
+cd NEBULAI-Auto-ping-
 ```
 ```
-python3 -m venv 
-souce  /bin/activate
+python3 -m venv NEBULAI-Auto-ping-
+souce NEBULAI-Auto-ping-/bin/activate
 ```
 ```
 pip3 install -r requirements.txt
