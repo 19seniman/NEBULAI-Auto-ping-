@@ -5,7 +5,7 @@ import asyncio
 import numpy as np
 import os
 import concurrent.futures
-from typing import Optional, Tuple  # Pastikan Tuple diimpor dari typing
+from typing import Optional, Tuple
 
 # Logger
 class Logger:
@@ -131,6 +131,7 @@ async def worker_loop(token: str):
             if not success:
                 await asyncio.sleep(2)
                 continue
+            Logger.info("Task fetched successfully.")
             results = await process_task(token, task_data)
             if not results:
                 await asyncio.sleep(1)
@@ -148,6 +149,7 @@ async def main():
     if not data:
         Logger.warn("No data in data.txt!")
         return
+    Logger.info("Starting worker loops...")
     await asyncio.gather(*(worker_loop(token) for token in data))
 
 if __name__ == "__main__":
