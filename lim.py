@@ -1,58 +1,6 @@
-import hashlib
-import time
-import aiohttp
-import asyncio
-import numpy as np
-import os
+import hashlib, time, random, aiohttp, asyncio, numpy as np, os
+from typing import List, Optional, Tuple
 import concurrent.futures
-from typing import Optional, Tuple
-
-# Logger
-class Logger:
-    colors = {
-        "green": "\033[92m",
-        "yellow": "\033[93m",
-        "red": "\033[91m",
-        "cyan": "\033[96m",
-        "white": "\033[97m",
-        "reset": "\033[0m",
-        "bold": "\033[1m"
-    }
-
-    @staticmethod
-    def info(msg):
-        print(f"{Logger.colors['green']}[✓] {msg}{Logger.colors['reset']}")
-
-    @staticmethod
-    def wallet(msg):
-        print(f"{Logger.colors['yellow']}[➤] {msg}{Logger.colors['reset']}")
-
-    @staticmethod
-    def warn(msg):
-        print(f"{Logger.colors['yellow']}[⚠] {msg}{Logger.colors['reset']}")
-
-    @staticmethod
-    def error(msg):
-        print(f"{Logger.colors['red']}[✗] {msg}{Logger.colors['reset']}")
-
-    @staticmethod
-    def success(msg):
-        print(f"{Logger.colors['green']}[✅] {msg}{Logger.colors['reset']}")
-
-    @staticmethod
-    def loading(msg):
-        print(f"{Logger.colors['cyan']}[⟳] {msg}{Logger.colors['reset']}")
-
-    @staticmethod
-    def step(msg):
-        print(f"{Logger.colors['white']}[➤] {msg}{Logger.colors['reset']}")
-
-    @staticmethod
-    def banner():
-        print(f"{Logger.colors['cyan']}{Logger.colors['bold']}")
-        print("---------------------------------------------")
-        print(" ddai-depin-on-solana  -  19Seniman From Insider ")
-        print("---------------------------------------------" + Logger.colors['reset'] + "\n")
 
 def generate_matrix(seed: int, size: int) -> np.ndarray:
     matrix = np.empty((size, size), dtype=np.float64)
@@ -84,8 +32,7 @@ async def fetch_task(session: aiohttp.ClientSession, token: str) -> Tuple[dict, 
             if data.get("code") == 0:
                 return data['data'], True
             return None, False
-    except Exception as e:
-        Logger.error(f"Fetch error: {str(e)}")
+    except Exception:
         return None, False
 
 async def submit_results(session: aiohttp.ClientSession, token: str, r1: float, r2: float, task_id: str) -> bool:
@@ -95,12 +42,9 @@ async def submit_results(session: aiohttp.ClientSession, token: str, r1: float, 
         async with session.post("https://nebulai.network/open_compute/finish/task", json=payload, headers=headers, timeout=10) as resp:
             data = await resp.json()
             if data.get("code") == 0 and data.get("data", {}).get("calc_status", False):
-                Logger.success("Results submitted successfully.")
                 return True
-            Logger.warn("Submission failed.")
             return False
-    except Exception as e:
-        Logger.error(f"Submit error: {str(e)}")
+    except Exception:
         return False
 
 async def process_task(token: str, task_data: dict) -> Optional[Tuple[float, float]]:
@@ -120,8 +64,7 @@ async def process_task(token: str, task_data: dict) -> Optional[Tuple[float, flo
         result_1 = t0 / f
         result_2 = f / (t1 - t0) if (t1 - t0) != 0 else 0
         return result_1, result_2
-    except Exception as e:
-        Logger.error(f"Process error: {str(e)}")
+    except Exception:
         return None
 
 async def worker_loop(token: str):
@@ -131,7 +74,6 @@ async def worker_loop(token: str):
             if not success:
                 await asyncio.sleep(2)
                 continue
-            Logger.info("Task fetched successfully.")
             results = await process_task(token, task_data)
             if not results:
                 await asyncio.sleep(1)
@@ -140,20 +82,18 @@ async def worker_loop(token: str):
             await asyncio.sleep(0.5 if submitted else 3)
 
 async def main():
-    Logger.banner()  # Menampilkan banner saat program dimulai
     if not os.path.exists("data.txt"):
-        Logger.error("data.txt not found!")
+        print("data.txt not found!")
         return
     with open("data.txt") as f:
-        data = [line.strip() for line in f if line.strip()]
+        data = [line.strip() for line in f if line.strip()]  # Ganti tokens menjadi data
     if not data:
-        Logger.warn("No data in data.txt!")
+        print("No data in data.txt!")  # Ganti pesan kesalahan
         return
-    Logger.info("Starting worker loops...")
-    await asyncio.gather(*(worker_loop(token) for token in data))
+    await asyncio.gather(*(worker_loop(token) for token in data))  # Ganti tokens menjadi data
 
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        Logger.warn("Stopped by user")
+        print("\n[😒] Stopped by user")
