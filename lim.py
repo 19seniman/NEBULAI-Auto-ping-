@@ -1,5 +1,9 @@
-import hashlib, time, random, aiohttp, asyncio, numpy as np, os
-from typing import List, Optional, Tuple
+import hashlib
+import time
+import aiohttp
+import asyncio
+import numpy as np
+import os
 import concurrent.futures
 
 # Logger
@@ -46,7 +50,7 @@ class Logger:
     def banner():
         print(f"{Logger.colors['cyan']}{Logger.colors['bold']}")
         print("---------------------------------------------")
-        print(" 19Seniman From Insider ")
+        print(" ddai-depin-on-solana  -  19Seniman From Insider ")
         print("---------------------------------------------" + Logger.colors['reset'] + "\n")
 
 def generate_matrix(seed: int, size: int) -> np.ndarray:
@@ -79,7 +83,8 @@ async def fetch_task(session: aiohttp.ClientSession, token: str) -> Tuple[dict, 
             if data.get("code") == 0:
                 return data['data'], True
             return None, False
-    except Exception:
+    except Exception as e:
+        Logger.error(f"Fetch error: {str(e)}")
         return None, False
 
 async def submit_results(session: aiohttp.ClientSession, token: str, r1: float, r2: float, task_id: str) -> bool:
@@ -89,9 +94,12 @@ async def submit_results(session: aiohttp.ClientSession, token: str, r1: float, 
         async with session.post("https://nebulai.network/open_compute/finish/task", json=payload, headers=headers, timeout=10) as resp:
             data = await resp.json()
             if data.get("code") == 0 and data.get("data", {}).get("calc_status", False):
+                Logger.success("Results submitted successfully.")
                 return True
+            Logger.warn("Submission failed.")
             return False
-    except Exception:
+    except Exception as e:
+        Logger.error(f"Submit error: {str(e)}")
         return False
 
 async def process_task(token: str, task_data: dict) -> Optional[Tuple[float, float]]:
@@ -111,7 +119,8 @@ async def process_task(token: str, task_data: dict) -> Optional[Tuple[float, flo
         result_1 = t0 / f
         result_2 = f / (t1 - t0) if (t1 - t0) != 0 else 0
         return result_1, result_2
-    except Exception:
+    except Exception as e:
+        Logger.error(f"Process error: {str(e)}")
         return None
 
 async def worker_loop(token: str):
