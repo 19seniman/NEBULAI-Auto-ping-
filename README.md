@@ -24,7 +24,7 @@ cd NEBULAI-Auto-ping-
 ```
 ```
 python3 -m venv NEBULAI-Auto-ping-
-souce NEBULAI-Auto-ping-/bin/activate
+source NEBULAI-Auto-ping-/bin/activate
 ```
 ```
 pip3 install -r requirements.txt
