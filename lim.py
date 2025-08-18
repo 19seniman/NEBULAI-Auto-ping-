@@ -7,7 +7,6 @@ import os
 import concurrent.futures
 from typing import Optional, Tuple
 
-# Logger baru
 class Logger:
     colors = {
         "cyan": "\033[96m",
