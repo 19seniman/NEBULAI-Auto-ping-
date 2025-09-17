@@ -106,7 +106,7 @@ async def fetch_task(session: aiohttp.ClientSession, token: str) -> Tuple[dict, 
     try:
         Logger.loading("Fetching task...")
         # URL untuk mengambil tugas
-        async with session.post("https://nebulai.network/open_compute/finish/task", json={}, headers=headers, timeout=10) as resp:
+        async with session.post("https://nebulai.network/opencompute/finish/task", json={}, headers=headers, timeout=10) as resp:
             data = await resp.json()
             if data.get("code") == 0:
                 Logger.info("Task fetched successfully.")
@@ -124,7 +124,7 @@ async def submit_results(session: aiohttp.ClientSession, token: str, r1: float, 
     try:
         Logger.loading("Submitting results...")
         # URL untuk mengirim hasil
-        async with session.post("https://nebulai.network/open_compute/submit/task", json=payload, headers=headers, timeout=10) as resp:
+        async with session.post("https://nebulai.network/opencompute/submit/task", json=payload, headers=headers, timeout=10) as resp:
             data = await resp.json()
             if data.get("code") == 0 and data.get("data", {}).get("calc_status", False):
                 Logger.success("Results submitted successfully.")
